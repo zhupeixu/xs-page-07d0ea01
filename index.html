@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小是，生日快乐</title>
+<style>
+  :root{
+    --paper:#F4F1EA; --paper2:#EFEAE0; --ink:#1F1C18; --ink2:#575046;
+    --orange:#DC580E; --kraft:#B49B72; --line:#D8D2C4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Noto Serif SC","Source Han Serif SC","Songti SC",STSong,SimSun,serif;
+    line-height:1.9; overflow-x:hidden;
+  }
+  /* 纸纹 */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+    background-image:repeating-linear-gradient(0deg,transparent 0 2px,rgba(31,28,24,.012) 2px 4px),
+                     radial-gradient(ellipse at 20% 10%,rgba(180,155,114,.06),transparent 60%);
+  }
+  .wrap{position:relative; z-index:1; max-width:640px; margin:0 auto; padding:0 26px;}
+
+  /* ===== 封面 ===== */
+  .cover{min-height:100svh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative;}
+  .cover .frame{border:1px solid var(--line); padding:54px 34px 44px; position:relative; background:rgba(255,255,255,.25);}
+  .cover .frame::after{content:""; position:absolute; inset:7px; border:1px solid var(--line); pointer-events:none;}
+  .cover .pre{font-size:13px; letter-spacing:.5em; color:var(--ink2); margin-bottom:26px; text-indent:.5em;}
+  .cover h1{font-size:44px; font-weight:600; letter-spacing:.12em; line-height:1.5;}
+  .cover h1 .name{color:var(--orange);}
+  .cover .date{margin-top:22px; font-size:14px; color:var(--ink2); letter-spacing:.3em; text-indent:.3em;}
+  .cover .from{margin-top:8px; font-family:"Kaiti SC",STKaiti,KaiTi,serif; font-size:15px; color:var(--ink2);}
+  .cover .down{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:12px; color:var(--ink2); letter-spacing:.35em; text-indent:.35em; animation:bob 2.4s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translate(-50%,0);opacity:.55}50%{transform:translate(-50%,8px);opacity:1}}
+
+  /* ===== 序 ===== */
+  .sec{padding:84px 0;}
+  .sec-tag{font-size:12px; letter-spacing:.4em; color:var(--kraft); margin-bottom:18px;}
+  .preface p{font-size:17px; margin-bottom:1.2em;}
+  .preface .strong{color:var(--orange);}
+
+  /* ===== 记忆卡 ===== */
+  .mem-list{list-style:none;}
+  .mem{opacity:0; transform:translateY(26px); transition:opacity .8s ease,transform .8s ease; padding:34px 0; border-top:1px solid var(--line); display:flex; gap:20px;}
+  .mem.show{opacity:1; transform:none;}
+  .mem .no{font-size:13px; color:var(--kraft); letter-spacing:.15em; padding-top:6px; min-width:34px;}
+  .mem .icon{flex:0 0 44px; height:44px; margin-top:4px;}
+  .mem .icon svg{width:100%; height:100%; stroke:var(--ink); stroke-width:1.4; fill:none; stroke-linecap:round; stroke-linejoin:round;}
+  .mem h3{font-size:19px; font-weight:600; margin-bottom:10px; letter-spacing:.05em;}
+  .mem h3 small{font-size:12px; color:var(--kraft); font-weight:normal; margin-left:10px; letter-spacing:.2em;}
+  .mem p{font-size:15.5px; color:#33302a;}
+  .mem .note{margin-top:10px; font-family:"Kaiti SC",STKaiti,KaiTi,serif; color:var(--ink2); font-size:14.5px;}
+
+  /* ===== 照片墙 ===== */
+  .wall{display:grid; grid-template-columns:repeat(2,1fr); gap:22px 18px;}
+  .pol{background:#FBF9F4; border:1px solid var(--line); padding:10px 10px 14px; box-shadow:0 2px 10px rgba(31,28,24,.07); transition:transform .35s ease; opacity:0; transform:translateY(24px);}
+  .pol.show{opacity:1; transform:rotate(var(--tilt,0deg));}
+  .pol:nth-child(odd){--tilt:-1.2deg;} .pol:nth-child(even){--tilt:1.1deg;}
+  .pol:hover{transform:rotate(0deg) scale(1.02);}
+  .pol .ph{aspect-ratio:4/3; background:var(--paper2); border:1px dashed var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .pol img{width:100%; height:100%; object-fit:cover;}
+  .pol .ph.empty{color:var(--kraft); font-size:12.5px; letter-spacing:.25em; text-indent:.25em;}
+  .pol .cap{font-family:"Kaiti SC",STKaiti,KaiTi,serif; font-size:13.5px; color:var(--ink2); margin-top:10px; text-align:center;}
+
+  /* ===== 爱与链接 ===== */
+  .love{background:var(--ink); color:#EDE7DB; margin:0 -26px; padding:76px 26px;}
+  .love .sec-tag{color:#9a8f7d;}
+  .love blockquote{font-family:"Kaiti SC",STKaiti,KaiTi,serif; font-size:21px; line-height:2; margin:26px 0; padding-left:18px; border-left:2px solid var(--orange);}
+  .love p{font-size:15.5px; color:#CFC7B8; margin-bottom:1.1em;}
+  .needs{display:flex; flex-wrap:wrap; gap:10px; margin:26px 0 8px;}
+  .needs span{font-size:12.5px; letter-spacing:.12em; border:1px solid #4a443b; padding:5px 13px; border-radius:999px; color:#B8AE9D;}
+  .needs span.hot{border-color:var(--orange); color:#F0A374;}
+
+  /* ===== 蜡烛 ===== */
+  .cake{display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 0 8px;}
+  .cake .tip{font-size:13.5px; color:var(--ink2); letter-spacing:.2em; margin-bottom:34px;}
+  .flame-zone{height:64px; display:flex; align-items:flex-end; justify-content:center; cursor:pointer; user-select:none; -webkit-user-select:none;}
+  .flame{width:16px; height:34px; background:radial-gradient(ellipse at 50% 80%,#FFD9A0 0%,#F5A623 45%,#DC580E 85%); border-radius:50% 50% 50% 50%/62% 62% 38% 38%; filter:blur(.6px); animation:flick .18s ease-in-out infinite alternate; transition:opacity .5s,transform .5s; transform-origin:50% 100%;}
+  @keyframes flick{from{transform:scaleY(1) rotate(-2.5deg)}to{transform:scaleY(.9) rotate(3deg)}}
+  .flame.out{opacity:0; transform:scaleY(.1);}
+  .wick{width:2px; height:10px; background:var(--ink); margin:0 auto;}
+  .candle{width:9px; height:58px; background:repeating-linear-gradient(45deg,#FBF9F4 0 6px,var(--orange) 6px 12px); border-radius:4px 4px 0 0; margin:0 auto;}
+  .cake .msg{margin-top:40px; font-size:20px; letter-spacing:.15em; min-height:1.6em; transition:opacity .6s;}
+  .smoke{position:absolute; width:3px; height:26px; background:linear-gradient(to top,rgba(87,80,70,.5),transparent); border-radius:3px; animation:rise 1.4s ease-out forwards;}
+  @keyframes rise{to{transform:translateY(-34px); opacity:0;}}
+
+  /* 彩带 */
+  .confetti{position:fixed; top:-12px; z-index:9; pointer-events:none; border-radius:1px; animation:drop linear forwards;}
+  @keyframes drop{to{transform:translateY(105vh) rotate(720deg);}}
+
+  /* ===== 落款 ===== */
+  .sign{text-align:center; padding:30px 0 110px;}
+  .sign .quote{font-family:"Kaiti SC",STKaiti,KaiTi,serif; font-size:17px; color:var(--ink2); margin-bottom:30px;}
+  .sign .name{font-size:15px; letter-spacing:.3em; color:var(--ink2);}
+  .hr{width:44px; height:1px; background:var(--kraft); margin:0 auto 30px;}
+
+  @media (min-width:641px){ .cover h1{font-size:56px;} .wall{grid-template-columns:repeat(3,1fr);} }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="wrap" style="display:flex;flex-direction:column;align-items:center;">
+    <div class="frame">
+      <div class="pre">A 　L I T T L E 　 A R C H I V E</div>
+      <h1><span class="name">小是</span>，<br>生日快乐</h1>
+      <div class="date" id="bday-date">·　·　·　年　·　月　·　日　·</div>
+      <div class="from">—— 一些小事的存档，from Perry</div>
+    </div>
+    <div class="down">往 下 翻</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="sec preface">
+    <div class="sec-tag">序</div>
+    <p>这份礼物不精致，是一堆小事的存档。</p>
+    <p>都是真的，都跟你有关。慢慢看。</p>
+  </section>
+
+  <section class="sec" style="padding-top:20px;">
+    <div class="sec-tag">六 件 小 事</div>
+    <ul class="mem-list">
+
+      <li class="mem">
+        <div class="no">壹</div>
+        <div class="icon"><svg viewBox="0 0 44 44"><path d="M8 30 h28 M10 30 v-4 h24 v4 M22 26 v-8 M14 18 h16 M16 12 h12" /></svg></div>
+        <div><h3>一个电脑支架<small>认识没多久</small></h3>
+        <p>第一次见面没多久，你送了我一个电脑支架。</p>
+        <p class="note">后来我常想，人和人的连接大概就是这么开始的——不是什么大事，是一件刚好用得上的东西，和一份刚好到位的心意。</p>
+        </div>
+      </li>
+
+      <li class="mem">
+        <div class="no">贰</div>
+        <div class="icon"><svg viewBox="0 0 44 44"><circle cx="16" cy="18" r="7"/><circle cx="29" cy="24" r="6"/><path d="M8 34 c6 3 22 3 28 0"/></svg></div>
+        <div><h3>水果时光<small>日常供应</small></h3>
+        <p>水果总是切好了出现在大家面前。你总说这是顺手的事。</p>
+        <p class="note">但我们都清楚——没有人会「顺手」切这么多次水果。</p>
+        </div>
+      </li>
+
+      <li class="mem">
+        <div class="no">叁</div>
+        <div class="icon"><svg viewBox="0 0 44 44"><rect x="9" y="18" width="26" height="17" rx="2"/><path d="M9 24 h26 M22 18 v-6 M16 12 h12 M14 28 c2 2 5 2 7 0 c2 2 5 2 7 0" /></svg></div>
+        <div><h3>独特的饭<small>基本全素</small></h3>
+        <p>你从家里带来的饭，基本都是素菜，独特到每次开饭盒大家都会多看两眼。别人的便当是便当，你的是风格。</p>
+        <p class="note">一个把所有人都照顾好的人，原来是这样照顾自己的。</p>
+        </div>
+      </li>
+
+      <li class="mem">
+        <div class="no">肆</div>
+        <div class="icon"><svg viewBox="0 0 44 44"><rect x="7" y="14" width="30" height="22" rx="3"/><circle cx="22" cy="25" r="7"/><path d="M16 14 l3-4 h6 l3 4"/></svg></div>
+        <div><h3>大合照召集人<small>说来就来</small></h3>
+        <p>合照都是你张罗的。你说拍就拍，我们就都站过去了——因为在那一刻，大家确实是开心的，也都知道该谢谁。</p>
+        </div>
+      </li>
+
+      <li class="mem">
+        <div class="no">伍</div>
+        <div class="icon"><svg viewBox="0 0 44 44"><circle cx="22" cy="11" r="5"/><path d="M22 16 v8 M14 24 h16 M17 24 l-3 12 M27 24 l3 12 M22 24 v12"/></svg></div>
+        <div><h3>随机采访<small>问题都很 private</small></h3>
+        <p>你的采访说来就来，问题还都很私人。一开始会愣住，答着答着就认真了。</p>
+        <p class="note">你是那种能把「随便聊聊」变成「好久没这么聊过天」的人。</p>
+        </div>
+      </li>
+
+      <li class="mem">
+        <div class="no">陆</div>
+        <div class="icon"><svg viewBox="0 0 44 44"><path d="M24 6 L12 25 h9 L20 38 L33 19 h-9 z"/></svg></div>
+        <div><h3>高能量体<small>电量常驻 100%</small></h3>
+        <p>你的电量好像永远是满的。策划、张罗、追问、张罗下一次。</p>
+        <p class="note">我们累的时候看看你，就又行了。</p>
+        </div>
+      </li>
+
+    </ul>
+  </section>
+
+  <section class="sec">
+    <div class="sec-tag">照 片 墙</div>
+    <div class="wall" id="wall"><!-- 由 JS 渲染 --></div>
+    <p style="font-size:13px;color:var(--kraft);margin-top:22px;letter-spacing:.1em;" id="wall-note"></p>
+  </section>
+
+  <section class="love">
+    <div class="sec-tag">爱 与 链 接</div>
+    <div class="needs">
+      <span>成长的确定性</span><span>不确定性</span><span class="hot">爱与链接</span><span>重要性</span><span>贡献</span><span>成长</span>
+    </div>
+    <p>人类六大需求里，你最常提的是「爱与链接」。以前听着像个理论，后来发现你是当真的——</p>
+    <p>切好的水果、饭盒里的素菜、说来就来的合影、突袭的私人采访、永远满格的电量——全是证据。你把这个词，过成了动词。</p>
+  </section>
+
+  <section class="sec cake">
+    <div class="tip">按 住 火 苗 ， 吹 口 气</div>
+    <div class="flame-zone" id="flameZone">
+      <div style="position:relative;">
+        <div class="flame" id="flame"></div>
+        <div class="wick"></div>
+      </div>
+    </div>
+    <div class="candle"></div>
+    <div class="msg" id="cakeMsg"></div>
+  </section>
+
+  <footer class="sign">
+    <div class="hr"></div>
+    <div class="quote">「去连接，去承担责任，去创造，去做决策。」<br>—— 你常说的话，新的一岁也送回给你。</div>
+    <div class="name">Perry</div>
+  </footer>
+
+</main>
+
+<script>
+  /* ========= 配置区：照片往这里填（src 填 base64 或留空显示占位） ========= */
+  const BIRTHDAY = ""; // 例如 "11 月 2 日"；填好后封面日期自动更新
+  const PHOTOS = [
+    { src: "", cap: "支架那天" },
+    { src: "", cap: "水果时光" },
+    { src: "", cap: "饭盒一角" },
+    { src: "", cap: "某次大合照" },
+    { src: "", cap: "采访现场" },
+    { src: "", cap: "一个平常的下午" },
+  ];
+  /* ====================================================================== */
+
+  if (BIRTHDAY) { document.getElementById('bday-date').textContent = "· 生日 " + BIRTHDAY + " ·"; }
+
+  // 照片墙
+  const wall = document.getElementById('wall');
+  const filled = PHOTOS.filter(p => p.src).length;
+  PHOTOS.forEach(p => {
+    const d = document.createElement('div'); d.className = 'pol';
+    d.innerHTML = '<div class="ph' + (p.src ? '' : ' empty') + '">' + (p.src ? '<img src="' + p.src + '" alt="">' : '等 一 张 照 片') + '</div><div class="cap">' + p.cap + '</div>';
+    wall.appendChild(d);
+  });
+  const wallNote = document.getElementById('wall-note');
+  if (filled < PHOTOS.length) wallNote.textContent = "（还有 " + (PHOTOS.length - filled) + " 格空着——照片在路上了）";
+  else wallNote.textContent = "共 " + filled + " 张，全是我们。";
+
+  // 滚动显现
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } }), { threshold: .18 });
+  document.querySelectorAll('.mem,.pol').forEach(el => io.observe(el));
+
+  // 吹蜡烛（按住）
+  const flame = document.getElementById('flame'), zone = document.getElementById('flameZone'), cakeMsg = document.getElementById('cakeMsg');
+  let out = false;
+  function blow(e){
+    if (out) return; out = true;
+    e.preventDefault();
+    flame.classList.add('out');
+    const s = document.createElement('div'); s.className = 'smoke';
+    flame.parentElement.appendChild(s);
+    cakeMsg.textContent = "愿望成才，人常开心。生日快乐！";
+    confetti();
+    zone.removeEventListener('touchstart', blow); zone.removeEventListener('mousedown', blow);
+  }
+  zone.addEventListener('touchstart', blow, {passive:false});
+  zone.addEventListener('mousedown', blow);
+
+  function confetti(){
+    const colors = ['#DC580E','#F0A374','#B49B72','#1F1C18','#E8D9BF'];
+    for (let i = 0; i < 46; i++){
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.left = Math.random()*100 + 'vw';
+      c.style.width = (5+Math.random()*6) + 'px'; c.style.height = (8+Math.random()*8) + 'px';
+      c.style.background = colors[i % colors.length];
+      c.style.animationDuration = (2.2+Math.random()*1.8) + 's';
+      c.style.animationDelay = (Math.random()*.7) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5200);
+    }
+  }
+</script>
+</body>
+</html>
